@@ -1,0 +1,9 @@
+co- co has many unrecognized tokens such %, ~, ...
+co- writing these tokens in a comment is totally acceptable, but not in the code
+co- this file will contain the unrecognized token "%" in the operation at line 8c
+co- that will be reported by the lexer
+
+begin
+    read(a);
+    b := 3 % 2;
+end

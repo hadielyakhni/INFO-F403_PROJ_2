@@ -1,0 +1,9 @@
+CO
+    This file contains totally valid co tokens, but as non-sense program.
+    These tokens will be accepted by the scanner but should not be accepted by the parser.
+CO
+
+
+end
+    a)( read; print)((((; endwhile for do if else ;;;***+-+
+begin
