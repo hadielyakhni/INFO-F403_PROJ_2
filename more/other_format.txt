@@ -1,0 +1,81 @@
+format compatible with: https://www.cs.princeton.edu/courses/archive/spring20/cos320/LL1/
+
+
+S ::= a A b
+A ::= B
+A ::= ''
+B ::= C Y
+Y ::= x B
+Y ::= ''
+C ::= D
+C ::= E
+C ::= F
+C ::= G
+C ::= H
+C ::= I
+D ::= w r K
+K ::= Q R
+R ::= _a Q R
+R ::= s Q R
+R ::= ''
+Q ::= U T
+T ::= _b U T
+T ::= _c U T
+T ::= ''
+U ::= s U
+U ::= _d
+U ::= w
+U ::= y K z
+E ::= c N d A W
+W ::= e
+W ::= f A e
+N ::= g N
+N ::= O
+O ::= K P K
+P ::= t
+P ::= u
+P ::= v
+F ::= h N i A j
+G ::= k w l K m K n K i A o
+H ::= p y w z
+I ::= q y w z
+
+
+Program           ::= begin Code end
+Code              ::= Instlist
+Code              ::= ''
+Instlist          ::= Instruction RestInstructions
+RestInstructions  ::= ; Instlist
+RestInstructions  ::= ''
+Instruction       ::= Assign
+Instruction       ::= If
+Instruction       ::= While
+Instruction       ::= For
+Instruction       ::= Print
+Instruction       ::= Read
+Assign            ::= [VarName] := ExprArith
+ExprArith         ::= Prod ExpArith'
+ExpArith'         ::= + Prod ExpArith'
+ExpArith'         ::= - Prod ExpArith'
+ExpArith'         ::= ''
+Prod              ::= Atom Prod'
+Prod'             ::= * Atom Prod'
+Prod'             ::= / Atom Prod'
+Prod'             ::= ''
+Atom              ::= - Atom
+Atom              ::= [Number]
+Atom              ::= [VarName]
+Atom              ::= ( ExprArith )
+If                ::= if Cond then Code IfSeq
+IfSeq             ::= endif
+IfSeq             ::= else Code endif
+Cond              ::= not Cond
+Cond              ::= SimpleCond
+SimpleCond        ::= ExprArith Comp ExprArith
+Comp              ::= =
+Comp              ::= >
+Comp              ::= <
+While             ::= while Cond do Code endwhile
+For               ::= for [VarName] from ExprArith by ExprArith to ExprArith do Code endfor
+Print             ::= print ( [VarName] )
+Read              ::= read ( [VarName] )

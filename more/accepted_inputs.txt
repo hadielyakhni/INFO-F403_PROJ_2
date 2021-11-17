@@ -1,0 +1,6 @@
+# Note that tokens are space separated
+
+begin while [VarName] = [Number] do endwhile end
+begin while [VarName] = [Number] do read ( [VarName] ) endwhile end
+begin while [VarName] = [Number] do read ( [VarName] ) ; [VarName] := [VarName] endwhile end
+begin read ( [VarName] ) ; read ( [VarName] ) ; while not [VarName] = [Number] do [VarName] := [VarName] ; while [VarName] + [Number] > [VarName] do [VarName] := [VarName] - [VarName] endwhile ; [VarName] := [VarName] ; [VarName] := [VarName] endwhile ; print ( [VarName] ) end
