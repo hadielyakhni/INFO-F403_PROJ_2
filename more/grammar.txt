@@ -11,9 +11,9 @@
                     -> <Print>
                     -> <Read>
 <Assign>            -> [VarName] := <ExprArith>
-<ExprArith>         -> <Prod> <ExpArith'>
-<ExpArith'>         -> + <Prod> <ExpArith'>
-                    -> - <Prod> <ExpArith'>
+<ExprArith>         -> <Prod> <ExprArith'>
+<ExprArith'>         -> + <Prod> <ExprArith'>
+                    -> - <Prod> <ExprArith'>
                     -> ε
 <Prod>              -> <Atom> <Prod'>
 <Prod'>             -> * <Atom> <Prod'>

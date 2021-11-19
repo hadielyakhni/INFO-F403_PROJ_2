@@ -42,4 +42,14 @@ public class ScannerManager {
         }
     }
 
+    public Symbol nextToken() {
+        try {
+            return this.lexer.nextToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
