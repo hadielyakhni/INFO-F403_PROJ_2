@@ -1,4 +1,5 @@
 - latex tree
 - cleanup
 - maybe add epsilon to first (but not necessary)
+- print transitions as ascii table
 - code cleanup
