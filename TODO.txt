@@ -1,0 +1,4 @@
+- latex tree
+- cleanup
+- maybe add epsilon to first (but not necessary)
+- code cleanup
