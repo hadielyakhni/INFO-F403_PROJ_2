@@ -1,0 +1,1 @@
+begin while [VarName] = [Number] do endwhile end

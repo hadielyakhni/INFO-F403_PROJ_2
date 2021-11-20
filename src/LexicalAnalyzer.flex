@@ -106,7 +106,7 @@ import java.util.TreeMap;
         * @return end of stream symbol
         */
         private Symbol legalEndOfFile() {
-            printSymbolTable();
+            // printSymbolTable();
             return new Symbol(LexicalUnit.END_OF_STREAM);
         }
 

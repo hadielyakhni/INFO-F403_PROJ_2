@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Symbol {
     public static final int UNDEFINED_POSITION = -1;
     public static final Object NO_VALUE = null;
@@ -5,6 +7,40 @@ public class Symbol {
     private final LexicalUnit type;
     private final Object value;
     private final int line, column;
+
+    private HashMap<LexicalUnit, String> lexicalUnitToGrammarString = new HashMap<LexicalUnit, String>(){{
+        put(LexicalUnit.VARNAME, "[VarName]");
+        put(LexicalUnit.NUMBER, "[Number]");
+        put(LexicalUnit.BEG, "beg");
+        put(LexicalUnit.END, "end");
+        put(LexicalUnit.SEMICOLON, ";");
+        put(LexicalUnit.ASSIGN, ":=");
+        put(LexicalUnit.LPAREN, "(");
+        put(LexicalUnit.RPAREN, ")");
+        put(LexicalUnit.MINUS, "-");
+        put(LexicalUnit.PLUS, "+");
+        put(LexicalUnit.TIMES, "*");
+        put(LexicalUnit.DIVIDE, "/");
+        put(LexicalUnit.IF, "if");
+        put(LexicalUnit.THEN, "then");
+        put(LexicalUnit.ENDIF, "endif");
+        put(LexicalUnit.ELSE, "else");
+        put(LexicalUnit.NOT, "not");
+        put(LexicalUnit.EQUAL, "=");
+        put(LexicalUnit.GREATER, ">");
+        put(LexicalUnit.SMALLER, "<");
+        put(LexicalUnit.WHILE, "while");
+        put(LexicalUnit.DO, "do");
+        put(LexicalUnit.ENDWHILE, "endwhile");
+        put(LexicalUnit.FOR, "for");
+        put(LexicalUnit.FROM, "from");
+        put(LexicalUnit.BY, "by");
+        put(LexicalUnit.TO, "to");
+        put(LexicalUnit.ENDFOR, "endfor");
+        put(LexicalUnit.PRINT, "print");
+        put(LexicalUnit.READ, "read");
+        put(LexicalUnit.END_OF_STREAM, "$");
+    }};
 
     public Symbol(LexicalUnit unit, int line, int column, Object value) {
         this.type = unit;
@@ -62,15 +98,10 @@ public class Symbol {
 
     @Override
     public String toString() {
-        switch (this.type) {
-            case VARNAME:
-                return "[VarName]";
-            case NUMBER:
-                return "[Number]";
-            case END_OF_STREAM:
-                return "$";
-            default:
-                return this.type.name();
+        if (this.type != null) {
+            return this.lexicalUnitToGrammarString.get(this.type);
+        } else {
+            return null;
         }
     }
 }

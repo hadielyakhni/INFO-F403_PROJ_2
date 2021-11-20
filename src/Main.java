@@ -13,5 +13,6 @@ public class Main {
         GrammarManager gm = new GrammarManager(grammar);
 
         Parser parser = new Parser(gm, sm);
+        parser.parse();
     }
 }

@@ -10,7 +10,7 @@ testing:
 
 test_file = euclid.co
 
-lexer_all:
+lexer:
 	jflex src/LexicalAnalyzer.flex
 	javac -d bin -cp src/ src/Main.java
 	jar cfe dist/part1.jar Main -C bin .
