@@ -32,8 +32,20 @@ public class GrammarManager {
         computeTransitions();
     }
 
+    public Set<String> getNonTerminals() {
+        return this.nonTerminals;
+    }
+
+    public Set<String> getTerminals() {
+        return this.terminals;
+    }
+
     public HashMap<String, HashMap<String, ArrayList<Rule>>> getTransitions() {
         return this.transitions;
+    }
+
+    public HashMap<String, Set<String>> getFirst() {
+        return this.first;
     }
 
     private void initializeNonTerminals() {

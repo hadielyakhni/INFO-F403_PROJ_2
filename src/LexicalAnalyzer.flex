@@ -164,7 +164,7 @@ READ            = read
 
 EndOfLine       = "\r"?"\n"
 
-WhiteSpace     = {EndOfLine} | [\s\t\f]*
+WhiteSpace      = {EndOfLine} | [\s\t\f]*
 
 AlphaUpperCase  = [A-Z]
 AlphaLowerCase  = [a-z]

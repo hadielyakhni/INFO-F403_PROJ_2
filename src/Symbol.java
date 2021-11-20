@@ -62,11 +62,15 @@ public class Symbol {
 
     @Override
     public String toString() {
-        if (this.isTerminal()) {
-            final String value = this.value != null ? this.value.toString() : "null";
-            final String type = this.type != null ? this.type.toString() : "null";
-            return "token: " + value + "\tlexical unit: " + type;
+        switch (this.type) {
+            case VARNAME:
+                return "[VarName]";
+            case NUMBER:
+                return "[Number]";
+            case END_OF_STREAM:
+                return "$";
+            default:
+                return this.type.name();
         }
-        return "Non-terminal symbol";
     }
 }

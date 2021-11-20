@@ -7,12 +7,11 @@ public class Main {
      * @param argv - file name to be scanned by the scanner
      */
     public static void main(String[] argv) throws Exception {
-        // ScannerManager sm = new ScannerManager(argv[0]);
-        // sm.scanFile();  <- will be called by the parser now
+        ScannerManager sm = new ScannerManager(argv[0]);
 
         String grammar = IO.readFile("../more/other_format.txt");
         GrammarManager gm = new GrammarManager(grammar);
 
-        gm.printTransitionTable();
+        Parser parser = new Parser(gm, sm);
     }
 }
