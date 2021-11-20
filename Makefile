@@ -30,4 +30,4 @@ javadoc:
 	cd src; javadoc -private -d ../doc/javadoc *.java
 
 main:
-	cd src; javac Main.java; java Main test/$(test_file); cd ..;
+	cd src; javac Main.java; java Main ../test/$(test_file); cd ..;
