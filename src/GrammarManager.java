@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class GrammarManager {
@@ -12,7 +11,6 @@ public class GrammarManager {
     private Set<String> terminals = new HashSet<>();
 
     private ArrayList<Rule> rules = new ArrayList<>();           // <- epsilon(s) filtered from rhs
-    private ArrayList<String> stringRules = new ArrayList<>();   // <- equivalent to rules.map(r -> r.toString())
     private Set<String> nullables = new HashSet<>();
 
     private HashMap<String, Set<String>> first = new HashMap<>();
@@ -70,14 +68,15 @@ public class GrammarManager {
 
     private void initializeRules() {
         String[] lines = this.grammar.split("\n");
+        int lineNumber = 0;
         for (String line : lines) {
+            lineNumber++;
             String[] splitLine = line.split(separator);
             String lhs = splitLine[0].trim();
             String[] rhs = splitLine[1].trim().split(" ");
             String[] filteredRhs = Arrays.stream(rhs).filter(s -> !isEpsilon(s)).toArray(String[]::new);
 
-            this.rules.add(new Rule(lhs, filteredRhs));
-            this.stringRules.add(new Rule(lhs, filteredRhs).toString());
+            this.rules.add(new Rule(lhs, filteredRhs, String.valueOf(lineNumber)));
         }
     }
 
@@ -223,11 +222,11 @@ public class GrammarManager {
             System.out.println("============");
             System.out.println();
             for (String terminal : this.terminals) {
-                ArrayList<Rule> transitions = this.transitions.get(nonTerminal).get(terminal);
-                if (transitions.size() == 0) {
+                ArrayList<Rule> possibleTransitions = this.transitions.get(nonTerminal).get(terminal);
+                if (possibleTransitions.size() == 0) {
 //                    System.out.println(terminal + ":\t\t x");
                 } else {
-                    int ruleNumber = this.stringRules.indexOf(transitions.get(0).toString()) + 1;
+                    String ruleNumber = possibleTransitions.get(0).ruleNumber;
                     System.out.println(terminal + "\t\t\t" + ruleNumber);
                 }
             }

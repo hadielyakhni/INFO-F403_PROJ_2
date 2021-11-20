@@ -1,1 +1,1 @@
-begin while [VarName] = [Number] do endwhile end
+begin while a = 16 do endwhile end

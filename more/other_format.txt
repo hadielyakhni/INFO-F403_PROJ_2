@@ -1,39 +1,39 @@
-S                 -> Program $
-Program           -> begin Code end
-Code              -> Instlist
-Code              -> ε
-Instlist          -> Instruction RestInstructions
-RestInstructions  -> ; Instlist
-RestInstructions  -> ε
-Instruction       -> Assign
-Instruction       -> If
-Instruction       -> While
-Instruction       -> For
-Instruction       -> Print
-Instruction       -> Read
-Assign            -> [VarName] := ExprArith
-ExprArith         -> Prod ExprArith'
-ExprArith'         -> + Prod ExprArith'
-ExprArith'         -> - Prod ExprArith'
-ExprArith'         -> ε
-Prod              -> Atom Prod'
-Prod'             -> * Atom Prod'
-Prod'             -> / Atom Prod'
-Prod'             -> ε
-Atom              -> - Atom
-Atom              -> [Number]
-Atom              -> [VarName]
-Atom              -> ( ExprArith )
-If                -> if Cond then Code IfSeq
-IfSeq             -> endif
-IfSeq             -> else Code endif
-Cond              -> not Cond
-Cond              -> SimpleCond
-SimpleCond        -> ExprArith Comp ExprArith
-Comp              -> =
-Comp              -> >
-Comp              -> <
-While             -> while Cond do Code endwhile
-For               -> for [VarName] from ExprArith by ExprArith to ExprArith do Code endfor
-Print             -> print ( [VarName] )
-Read              -> read ( [VarName] )
+S                   -> Program $
+Program             -> begin Code end
+Code                -> Instlist
+Code                -> ε
+Instlist            -> Instruction RestInstructions
+RestInstructions    -> ; Instlist
+RestInstructions    -> ε
+Instruction         -> Assign
+Instruction         -> If
+Instruction         -> While
+Instruction         -> For
+Instruction         -> Print
+Instruction         -> Read
+Assign              -> [VarName] := ExprArith
+ExprArith           -> Prod ExprArith'
+ExprArith'          -> + Prod ExprArith'
+ExprArith'          -> - Prod ExprArith'
+ExprArith'          -> ε
+Prod                -> Atom Prod'
+Prod'               -> * Atom Prod'
+Prod'               -> / Atom Prod'
+Prod'               -> ε
+Atom                -> - Atom
+Atom                -> [Number]
+Atom                -> [VarName]
+Atom                -> ( ExprArith )
+If                  -> if Cond then Code IfSeq
+IfSeq               -> endif
+IfSeq               -> else Code endif
+Cond                -> not Cond
+Cond                -> SimpleCond
+SimpleCond          -> ExprArith Comp ExprArith
+Comp                -> =
+Comp                -> >
+Comp                -> <
+While               -> while Cond do Code endwhile
+For                 -> for [VarName] from ExprArith by ExprArith to ExprArith do Code endfor
+Print               -> print ( [VarName] )
+Read                -> read ( [VarName] )

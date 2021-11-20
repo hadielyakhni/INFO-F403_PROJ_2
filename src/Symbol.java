@@ -11,7 +11,7 @@ public class Symbol {
     private HashMap<LexicalUnit, String> lexicalUnitToGrammarString = new HashMap<LexicalUnit, String>(){{
         put(LexicalUnit.VARNAME, "[VarName]");
         put(LexicalUnit.NUMBER, "[Number]");
-        put(LexicalUnit.BEG, "beg");
+        put(LexicalUnit.BEG, "begin");
         put(LexicalUnit.END, "end");
         put(LexicalUnit.SEMICOLON, ";");
         put(LexicalUnit.ASSIGN, ":=");

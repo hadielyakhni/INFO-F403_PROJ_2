@@ -175,7 +175,7 @@ ShortComment    = {co}.*{EndOfLine}
 co              = co
 CO              = CO
 
-Number          = [0-9]
+Number          = [0-9]+
 
 VarName         = {Alpha}({Number}|{Alpha})*
 

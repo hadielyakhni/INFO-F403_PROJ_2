@@ -5,7 +5,7 @@ begin
   read(b) ;
   while not b = 0 do
     c := b ;
-    while a+1 > b do     co computation of modulo
+    while a + 1 > b do     co computation of modulo
       a := a-b
     endwhile ;
     b := a ;
