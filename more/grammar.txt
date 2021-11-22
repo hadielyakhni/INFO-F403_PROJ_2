@@ -1,82 +1,38 @@
-<Program>           -> begin <Code> end
-<Code>              -> <Instlist>
-                    -> ε
-<Instlist>          -> <Instruction> <RestInstructions>
-<RestInstructions>  -> ; <Instlist>
-                    -> ε
-<Instruction>       -> <Assign>
-                    -> <If>
-                    -> <While>
-                    -> <For>
-                    -> <Print>
-                    -> <Read>
-<Assign>            -> [VarName] := <ExprArith>
-<ExprArith>         -> <Prod> <ExprArith'>
-<ExprArith'>         -> + <Prod> <ExprArith'>
-                    -> - <Prod> <ExprArith'>
-                    -> ε
-<Prod>              -> <Atom> <Prod'>
-<Prod'>             -> * <Atom> <Prod'>
-                    -> / <Atom> <Prod'>
-                    -> ε
-<Atom>              -> - <Atom>
-                    -> [Number]
-                    -> [VarName]
-                    -> ( <ExprArith> )
-<If>                -> if <Cond> then <Code> <IfSeq>
-<IfSeq>             -> endif
-                    -> else <Code> endif
-<Cond>              -> not <Cond>
-                    -> <SimpleCond>
-<SimpleCond>        -> <ExprArith> <Comp> <ExprArith>
-<Comp>              -> =
-                    -> >
-                    -> <
-<While>             -> while <Cond> do <Code> endwhile
-<For>               -> for [VarName] from <ExprArith> by <ExprArith> to <ExprArith> do <Code> endfor
-<Print>             -> print ([VarName])
-<Read>              -> read ( [VarName] )
-
-
-format compatible with: https://smlweb.cpsc.ucalgary.ca/start.html
-
-
-S -> a A b.
-A -> B
-   | .
-B -> C Y.
-Y -> x B
-   | .
-C -> D
-   | E
-   | F
-   | G
-   | H
-   | I.
-D -> w r K.
-K -> Q R.
-R -> _a Q R
-   | s Q R
-   | .
-Q -> U T.
-T -> _b U T
-   | _c U T
-   | .
-U -> s U
-   | _d
-   | w
-   | y K z.
-E -> c N d A W.
-W -> e
-   | f A e.
-N -> g N
-   | O.
-O -> K P K.
-P -> t
-   | u
-   | v.
-F -> h N i A j.
-G -> k w l K m K n K i A o.
-H -> p y w z.
-I -> q y w z.
-
+Program             -> begin Code end
+Code                -> Instlist
+Code                -> ε
+Instlist            -> Instruction RestInstructions
+RestInstructions    -> ; Instlist
+RestInstructions    -> ε
+Instruction         -> Assign
+Instruction         -> If
+Instruction         -> While
+Instruction         -> For
+Instruction         -> Print
+Instruction         -> Read
+Assign              -> [VarName] := ExprArith
+ExprArith           -> Prod ExprArith'
+ExprArith'          -> + Prod ExprArith'
+ExprArith'          -> - Prod ExprArith'
+ExprArith'          -> ε
+Prod                -> Atom Prod'
+Prod'               -> * Atom Prod'
+Prod'               -> / Atom Prod'
+Prod'               -> ε
+Atom                -> - Atom
+Atom                -> [Number]
+Atom                -> [VarName]
+Atom                -> ( ExprArith )
+If                  -> if Cond then Code IfSeq
+IfSeq               -> endif
+IfSeq               -> else Code endif
+Cond                -> not Cond
+Cond                -> SimpleCond
+SimpleCond          -> ExprArith Comp ExprArith
+Comp                -> =
+Comp                -> >
+Comp                -> <
+While               -> while Cond do Code endwhile
+For                 -> for [VarName] from ExprArith by ExprArith to ExprArith do Code endfor
+Print               -> print ( [VarName] )
+Read                -> read ( [VarName] )

@@ -4,17 +4,17 @@ public class Parser {
 
     private ScannerManager scanner;
 
-    private Set<String> nonTerminals;
+    private String grammarTop;
     private Set<String> terminals;
     private HashMap<String, HashMap<String, ArrayList<Rule>>> transitions;
     private HashMap<String, Set<String>> first;
 
-    private Stack<String> stack = new Stack<>();
+    private final Stack<String> stack = new Stack<>();
     private boolean error;
     private boolean advanceInput;
     private Symbol currentToken;
 
-    private ArrayList<String> appliedRules = new ArrayList<>();
+    private final ArrayList<String> appliedRules = new ArrayList<>();
 
     public Parser(GrammarManager grammarManager, ScannerManager scanner) {
         initializeScanner(scanner);
@@ -27,15 +27,15 @@ public class Parser {
     }
 
     private void initializeGrammarSate(GrammarManager grammarManager) {
-        this.nonTerminals = grammarManager.getNonTerminals();
         this.terminals = grammarManager.getTerminals();
         this.transitions = grammarManager.getTransitions();
         this.first = grammarManager.getFirst();
+        this.grammarTop = grammarManager.getGrammarTop();
     }
 
     private void initializeParserState() {
         this.stack.push("$");
-        this.stack.push("S");
+        this.stack.push(this.grammarTop);
 
         this.advanceInput = false;
         this.error = false;
@@ -44,7 +44,6 @@ public class Parser {
     private Symbol getToken() {
         if (this.currentToken == null || this.advanceInput) {
             this.currentToken = this.scanner.nextToken();
-            return this.currentToken;
         }
 
         return this.currentToken;
@@ -55,7 +54,7 @@ public class Parser {
         String top = this.stack.pop();
 
         if (top.equals("$") && next.equals("$")) {
-            System.out.println("Parsing complete! The following rules were applied:\n");
+            System.out.println("\nParsing complete! The following rules were applied:\n");
             System.out.println(String.join(" ", appliedRules)+ "\n");
             return;
         }

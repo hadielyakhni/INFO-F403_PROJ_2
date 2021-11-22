@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] argv) throws Exception {
         ScannerManager sm = new ScannerManager(argv[0]);
 
-        String grammar = IO.readFile("../more/other_format.txt");
+        String grammar = IO.readFile("../more/grammar.txt");
         GrammarManager gm = new GrammarManager(grammar);
 
         Parser parser = new Parser(gm, sm);

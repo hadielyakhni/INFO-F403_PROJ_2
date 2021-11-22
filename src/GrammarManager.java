@@ -5,17 +5,17 @@ public class GrammarManager {
     public static String separator = "->";
     public static String epsilon = "ε";
 
-    private String grammar;
+    private final String grammar;
 
-    private Set<String> nonTerminals = new HashSet<>();
-    private Set<String> terminals = new HashSet<>();
+    private final Set<String> nonTerminals = new HashSet<>();
+    private final Set<String> terminals = new HashSet<>();
 
-    private ArrayList<Rule> rules = new ArrayList<>();           // <- epsilon(s) filtered from rhs
-    private Set<String> nullables = new HashSet<>();
+    private final ArrayList<Rule> rules = new ArrayList<>();           // <- epsilon(s) filtered from rhs
+    private final Set<String> nullables = new HashSet<>();
 
-    private HashMap<String, Set<String>> first = new HashMap<>();
-    private HashMap<String, Set<String>> follow = new HashMap<>();
-    private HashMap<String, HashMap<String, ArrayList<Rule>>> transitions = new HashMap<>();
+    private final HashMap<String, Set<String>> first = new HashMap<>();
+    private final HashMap<String, Set<String>> follow = new HashMap<>();
+    private final HashMap<String, HashMap<String, ArrayList<Rule>>> transitions = new HashMap<>();
 
     public GrammarManager(String grammar) {
         this.grammar = grammar;
@@ -30,24 +30,25 @@ public class GrammarManager {
         computeTransitions();
     }
 
-    public Set<String> getNonTerminals() {
-        return this.nonTerminals;
+    public String getGrammarTop() {
+        return this.rules.get(0).lhs;
     }
 
     public Set<String> getTerminals() {
         return this.terminals;
     }
 
-    public HashMap<String, HashMap<String, ArrayList<Rule>>> getTransitions() {
-        return this.transitions;
-    }
-
     public HashMap<String, Set<String>> getFirst() {
         return this.first;
     }
 
+    public HashMap<String, HashMap<String, ArrayList<Rule>>> getTransitions() {
+        return this.transitions;
+    }
+
     private void initializeNonTerminals() {
         String[] lines = this.grammar.split("\n");
+
         for (String line : lines) {
             String lhs = line.split(separator)[0].trim();
             this.nonTerminals.add(lhs);
@@ -59,7 +60,7 @@ public class GrammarManager {
         for (String line : lines) {
             String[] rhs = line.split(separator)[1].trim().split(" ");
             for (String s : rhs) {
-                if (!isNonTerminal(s) && !isEpsilon(s)) {
+                if (!isNonTerminal(s) && isNotEpsilon(s)) {
                     this.terminals.add(s);
                 }
             }
@@ -74,7 +75,7 @@ public class GrammarManager {
             String[] splitLine = line.split(separator);
             String lhs = splitLine[0].trim();
             String[] rhs = splitLine[1].trim().split(" ");
-            String[] filteredRhs = Arrays.stream(rhs).filter(s -> !isEpsilon(s)).toArray(String[]::new);
+            String[] filteredRhs = Arrays.stream(rhs).filter(this::isNotEpsilon).toArray(String[]::new);
 
             this.rules.add(new Rule(lhs, filteredRhs, String.valueOf(lineNumber)));
         }
@@ -87,7 +88,7 @@ public class GrammarManager {
             for (Rule rule : this.rules) {
                 // if all rhs of this production are nullable,
                 // mark it as nullable
-                if (Arrays.stream(rule.rhs).allMatch(s -> isNullable(s))) {
+                if (Arrays.stream(rule.rhs).allMatch(this::isNullable)) {
                     // will be true if rhs.length = 0, and here we start!!
                     if (!isNullable(rule.lhs)) {
                         this.nullables.add(rule.lhs);
@@ -114,13 +115,11 @@ public class GrammarManager {
         }
 
         String[] rhsPortion = new String[end];
-        for (int i = 0; i < end; i++) {
-            rhsPortion[i] = rhs[i];
-        }
+        System.arraycopy(rhs, 0, rhsPortion, 0, end);
 
         return Arrays
                 .stream(rhsPortion)
-                .map(s -> first.get(s))
+                .map(first::get)
                 .reduce(new HashSet<>(), (Set<String> set1, Set<String> set2) -> {
                     Set<String> result = new HashSet<>(set1);
                     result.addAll(set2);
@@ -197,42 +196,11 @@ public class GrammarManager {
                 this.transitions.get(rule.lhs).get(a).add(rule);
             }
 
-            if (Arrays.stream(rule.rhs).allMatch(s -> isNullable(s))) {
+            if (Arrays.stream(rule.rhs).allMatch(this::isNullable)) {
                 for (String a : this.follow.get(rule.lhs)) {
                     this.transitions.get(rule.lhs).get(a).add(rule);
                 }
             }
-        }
-    }
-
-    //TODO: make this dynamic
-    public void printTransitionTable() {
-        String leftAlignFormat = "| %-15s | %-4d | %-4s |%n";
-
-        System.out.format("+-----------------+------+------+%n");
-        System.out.format("| Column name     | ID   | NAME |%n");
-        System.out.format("+-----------------+------+------|%n");
-        for (int i = 0; i < 5; i++) {
-            System.out.format(leftAlignFormat, "some data" + i, i * i, "hadi");
-        }
-        System.out.format("+-----------------+------+------+%n");
-
-        for (String nonTerminal : this.nonTerminals) {
-            System.out.println(nonTerminal);
-            System.out.println("============");
-            System.out.println();
-            for (String terminal : this.terminals) {
-                ArrayList<Rule> possibleTransitions = this.transitions.get(nonTerminal).get(terminal);
-                if (possibleTransitions.size() == 0) {
-//                    System.out.println(terminal + ":\t\t x");
-                } else {
-                    String ruleNumber = possibleTransitions.get(0).ruleNumber;
-                    System.out.println(terminal + "\t\t\t" + ruleNumber);
-                }
-            }
-            System.out.println();
-            System.out.println();
-            System.out.println();
         }
     }
 
@@ -246,8 +214,8 @@ public class GrammarManager {
         return this.nonTerminals.contains(str);
     }
 
-    private boolean isEpsilon(String str) {
-        return str.equals(this.epsilon);
+    private boolean isNotEpsilon(String str) {
+        return !str.equals(GrammarManager.epsilon);
     }
 
     private boolean isNullable(String str) {
