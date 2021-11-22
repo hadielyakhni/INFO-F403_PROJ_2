@@ -36,10 +36,6 @@ public class GrammarManager {
         return this.rules.get(0).lhs;
     }
 
-    public Set<String> getTerminals() {
-        return this.terminals;
-    }
-
     public HashMap<String, Set<String>> getFirst() {
         return this.first;
     }
@@ -212,15 +208,19 @@ public class GrammarManager {
         return result;
     }
 
-    private boolean isNonTerminal(String str) {
+    public boolean isTerminal(String str) {
+        return this.terminals.contains(str);
+    }
+
+    public boolean isNonTerminal(String str) {
         return this.nonTerminals.contains(str);
     }
 
-    private boolean notEpsilon(String str) {
+    public boolean notEpsilon(String str) {
         return !str.equals(epsilon);
     }
 
-    private boolean isNullable(String str) {
+    public boolean isNullable(String str) {
         return this.nullables.contains(str);
     }
 }

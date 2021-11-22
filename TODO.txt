@@ -1,4 +1,2 @@
 - latex tree
-- maybe add epsilon to first (but not necessary)
 - javadoc
-- code cleanup

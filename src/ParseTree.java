@@ -14,28 +14,39 @@ import java.util.ArrayList;
  */
 
 public class ParseTree {
-    private Symbol label; // The label of the root of the tree
-    private List<ParseTree> children; // Its children, which are trees themselves
+    public Symbol label; // The label of the root of the tree
+    private final ParseTree parent;
+    private final List<ParseTree> children; // Its children, which are trees themselves
+    private int currentChildToScan;  // which child tree should we fill while parsing
 
-    /**
-     * Creates a singleton tree with only a root labeled by lbl.
-     * 
-     * @param lbl The label of the root
-     */
-    public ParseTree(Symbol lbl) {
-        this.label = lbl;
-        this.children = new ArrayList<ParseTree>(); // This tree has no children
+    public List<ParseTree> getChildren() {
+        return children;
     }
 
-    /**
-     * Creates a tree with root labeled by lbl and children chdn.
-     * 
-     * @param lbl  The label of the root
-     * @param chdn Its children
-     */
-    public ParseTree(Symbol lbl, List<ParseTree> chdn) {
+    public void addChild(ParseTree child) {
+        children.add(child);
+    }
+
+    public ParseTree advanceToNextNode() {
+        ParseTree parent = this.parent;
+
+        if(parent == null) {
+            return null;
+        }
+
+        parent.currentChildToScan++;
+        if(parent.currentChildToScan < parent.children.size()) {
+            return parent.children.get(parent.currentChildToScan);
+        }
+
+        return parent.advanceToNextNode();
+    }
+
+    public ParseTree(Symbol lbl, ParseTree parent) {
         this.label = lbl;
-        this.children = chdn;
+        this.parent = parent;
+        this.children = new ArrayList<>(); // This tree has no children - yet
+        this.currentChildToScan = 0;
     }
 
     /**

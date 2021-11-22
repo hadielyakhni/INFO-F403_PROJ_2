@@ -72,10 +72,6 @@ public class Symbol {
         return (value + "_" + type).hashCode();
     }
 
-    public String toTexString() {
-        return "";
-    }
-
     @Override
     public String toString() {
         if (this.type != null) {
@@ -83,5 +79,9 @@ public class Symbol {
         } else {
             return null;
         }
+    }
+
+    public String toTexString() {
+        return this.value.toString();
     }
 }
