@@ -1,4 +1,4 @@
 - latex tree
 - maybe add epsilon to first (but not necessary)
-- add option to print tables in the console (as ascii tables)
+- javadoc
 - code cleanup

@@ -2,7 +2,9 @@ import java.util.*;
 
 public class GrammarManager {
 
-    public static String separator = "->";
+    public static String leftRightSeparator = "->";
+    public static String rhsSeparator = " ";
+
     public static String epsilon = "ε";
 
     private final String grammar;
@@ -10,7 +12,7 @@ public class GrammarManager {
     private final Set<String> nonTerminals = new HashSet<>();
     private final Set<String> terminals = new HashSet<>();
 
-    private final ArrayList<Rule> rules = new ArrayList<>();           // <- epsilon(s) filtered from rhs
+    private final ArrayList<Rule> rules = new ArrayList<>();     // <- epsilon(s) filtered from rhs
     private final Set<String> nullables = new HashSet<>();
 
     private final HashMap<String, Set<String>> first = new HashMap<>();
@@ -50,7 +52,7 @@ public class GrammarManager {
         String[] lines = this.grammar.split("\n");
 
         for (String line : lines) {
-            String lhs = line.split(separator)[0].trim();
+            String lhs = line.split(leftRightSeparator)[0].trim();
             this.nonTerminals.add(lhs);
         }
     }
@@ -58,9 +60,9 @@ public class GrammarManager {
     private void initializeTerminals() {
         String[] lines = this.grammar.split("\n");
         for (String line : lines) {
-            String[] rhs = line.split(separator)[1].trim().split(" ");
+            String[] rhs = line.split(leftRightSeparator)[1].trim().split(rhsSeparator);
             for (String s : rhs) {
-                if (!isNonTerminal(s) && isNotEpsilon(s)) {
+                if (!isNonTerminal(s) && notEpsilon(s)) {
                     this.terminals.add(s);
                 }
             }
@@ -72,10 +74,10 @@ public class GrammarManager {
         int lineNumber = 0;
         for (String line : lines) {
             lineNumber++;
-            String[] splitLine = line.split(separator);
+            String[] splitLine = line.split(leftRightSeparator);
             String lhs = splitLine[0].trim();
-            String[] rhs = splitLine[1].trim().split(" ");
-            String[] filteredRhs = Arrays.stream(rhs).filter(this::isNotEpsilon).toArray(String[]::new);
+            String[] rhs = splitLine[1].trim().split(rhsSeparator);
+            String[] filteredRhs = Arrays.stream(rhs).filter(this::notEpsilon).toArray(String[]::new);
 
             this.rules.add(new Rule(lhs, filteredRhs, String.valueOf(lineNumber)));
         }
@@ -86,8 +88,8 @@ public class GrammarManager {
         while (changed) {
             changed = false;
             for (Rule rule : this.rules) {
-                // if all rhs of this production are nullable,
-                // mark it as nullable
+                // if all rhs of this production are nullable, mark it as nullable.
+                // if rhs == [], this will also mark lhs as nullable.
                 if (Arrays.stream(rule.rhs).allMatch(this::isNullable)) {
                     // will be true if rhs.length = 0, and here we start!!
                     if (!isNullable(rule.lhs)) {
@@ -214,8 +216,8 @@ public class GrammarManager {
         return this.nonTerminals.contains(str);
     }
 
-    private boolean isNotEpsilon(String str) {
-        return !str.equals(GrammarManager.epsilon);
+    private boolean notEpsilon(String str) {
+        return !str.equals(epsilon);
     }
 
     private boolean isNullable(String str) {

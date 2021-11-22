@@ -14,6 +14,6 @@ public class Rule {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", lhs, GrammarManager.separator, String.join(" ", rhs));
+        return String.format("%s %s %s", lhs, GrammarManager.leftRightSeparator, String.join(GrammarManager.rhsSeparator, rhs));
     }
 }
