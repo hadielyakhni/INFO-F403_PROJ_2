@@ -1,7 +1,4 @@
 public class Rule {
-
-    //TODO: add a field for rule number
-
     public String lhs;
     public String[] rhs;
     public String ruleNumber;

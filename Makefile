@@ -14,6 +14,7 @@ clean:
 	rm -rf dist/*
 	rm -rf bin/*
 	rm -rf doc/javadoc
+	rm -rf *.tex
 
 javadoc:
 	cd src; javadoc -private -d ../doc/javadoc *.java

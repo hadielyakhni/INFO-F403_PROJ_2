@@ -5,8 +5,16 @@ public class Symbol {
     public static final Object NO_VALUE = null;
 
     private final LexicalUnit type;
-    private final Object value;
+    private Object value;
     private final int line, column;
+
+    public String getValue() {
+        return this.value.toString();
+    }
+
+    public void setValue(Object value) {
+        this.value = value.toString();
+    }
 
     private final HashMap<LexicalUnit, String> lexicalUnitToTerminal = new HashMap<LexicalUnit, String>(){{
         put(LexicalUnit.VARNAME, "[VarName]");
@@ -42,6 +50,40 @@ public class Symbol {
         put(LexicalUnit.END_OF_STREAM, "$");
     }};
 
+    private static final HashMap<String, LexicalUnit> terminalToLexicalUnit = new HashMap<String, LexicalUnit>(){{
+        put("[VarName]",LexicalUnit.VARNAME);
+        put("[Number]", LexicalUnit.NUMBER);
+        put("begin",LexicalUnit.BEG);
+        put("end",LexicalUnit.END);
+        put(";",LexicalUnit.SEMICOLON);
+        put(":=",LexicalUnit.ASSIGN);
+        put("(",LexicalUnit.LPAREN);
+        put(")",LexicalUnit.RPAREN);
+        put("-",LexicalUnit.MINUS);
+        put("+",LexicalUnit.PLUS);
+        put("*",LexicalUnit.TIMES);
+        put("/",LexicalUnit.DIVIDE);
+        put("if",LexicalUnit.IF);
+        put("then",LexicalUnit.THEN);
+        put("endif",LexicalUnit.ENDIF);
+        put("else",LexicalUnit.ELSE);
+        put("not",LexicalUnit.NOT);
+        put("=",LexicalUnit.EQUAL);
+        put(">",LexicalUnit.GREATER);
+        put("<",LexicalUnit.SMALLER);
+        put("while",LexicalUnit.WHILE);
+        put("do",LexicalUnit.DO);
+        put("endwhile",LexicalUnit.ENDWHILE);
+        put("for",LexicalUnit.FOR);
+        put("from",LexicalUnit.FROM);
+        put("by",LexicalUnit.BY);
+        put("to",LexicalUnit.TO);
+        put("endfor",LexicalUnit.ENDFOR);
+        put("print",LexicalUnit.PRINT);
+        put("read",LexicalUnit.READ);
+        put("$",LexicalUnit.END_OF_STREAM);
+    }};
+
     public Symbol(LexicalUnit unit, int line, int column, Object value) {
         this.type = unit;
         this.line = line + 1;
@@ -65,6 +107,14 @@ public class Symbol {
         this(unit, UNDEFINED_POSITION, UNDEFINED_POSITION, value);
     }
 
+    public static LexicalUnit getLexicalUnit(String str) {
+        if(terminalToLexicalUnit.containsKey(str)) {
+            return terminalToLexicalUnit.get(str);
+        }
+
+        return null;
+    }
+
     @Override
     public int hashCode() {
         final String value = this.value != null ? this.value.toString() : "null";
@@ -81,15 +131,22 @@ public class Symbol {
         }
     }
 
-    public String getActualValue() {
-        if(this.type == LexicalUnit.VARNAME || this.type == LexicalUnit.NUMBER) {
-            return this.value.toString();
-        }
-
-        return null;
+    public boolean isTerminal() {
+        return this.type != null;
     }
 
     public String toTexString() {
-        return this.value.toString();
+        if(!isTerminal()) {
+            return this.value.toString();
+        }
+
+        StringBuilder str = new StringBuilder();
+        str.append(this.lexicalUnitToTerminal.get(this.type));
+
+        if(this.type == LexicalUnit.VARNAME || this.type == LexicalUnit.NUMBER) {
+            str.append(" - ");
+            str.append(this.value.toString());
+        }
+        return str.toString();
     }
 }

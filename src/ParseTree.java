@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class ParseTree {
     public Symbol label; // The label of the root of the tree
-    private final ParseTree parent;
     private final List<ParseTree> children; // Its children, which are trees themselves
     private int currentChildToScan;  // which child tree should we fill while parsing
 
@@ -23,28 +22,19 @@ public class ParseTree {
         return children;
     }
 
-    public void addChild(Symbol symbol) {
-        children.add(new ParseTree(symbol, this));
+    public Symbol getLabel() {
+        return this.label;
     }
 
-    public ParseTree advanceToNextNode() {
-        ParseTree parent = this.parent;
+    public ParseTree addChild(Symbol symbol) {
+        ParseTree child = new ParseTree(symbol);
+        children.add(child);
 
-        if(parent == null) {
-            return null;
-        }
-
-        parent.currentChildToScan++;
-        if(parent.currentChildToScan < parent.children.size()) {
-            return parent.children.get(parent.currentChildToScan);
-        }
-
-        return parent.advanceToNextNode();
+        return child;
     }
 
-    public ParseTree(Symbol lbl, ParseTree parent) {
+    public ParseTree(Symbol lbl) {
         this.label = lbl;
-        this.parent = parent;
         this.children = new ArrayList<>();
         this.currentChildToScan = 0;
     }

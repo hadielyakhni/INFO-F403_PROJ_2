@@ -10,8 +10,8 @@ public class Parser {
     private boolean advanceInput;
     private Symbol currentToken;
 
+    private Stack<ParseTree> parents = new Stack<>();
     private ParseTree rootParseTree;
-    private ParseTree currentParseTree;
     private String parseTreeOutputFile;
 
     private final ArrayList<String> appliedRules = new ArrayList<>();
@@ -36,8 +36,9 @@ public class Parser {
 
     private void initializeParserTreeState() {
         Symbol rootNode = new Symbol(null, Symbol.UNDEFINED_POSITION, Symbol.UNDEFINED_POSITION, grammar.getGrammarTop());
-        this.rootParseTree = new ParseTree(rootNode, null);
-        this.currentParseTree = this.rootParseTree;
+        this.rootParseTree = new ParseTree(rootNode);
+
+        this.parents.add(this.rootParseTree);
     }
 
     private Symbol getToken() {
@@ -63,11 +64,10 @@ public class Parser {
             if (next.toString().equals(top)) {
                 this.advanceInput = true;
 
-                // updated the current tree, we have to update the current parent!!
-                if(next.getActualValue() != null) {
-                    this.currentParseTree.addChild(next);
+                ParseTree currentParent = parents.pop();
+                if(next.isTerminal()) {
+                    currentParent.getLabel().setValue(next.getValue());
                 }
-                this.currentParseTree = this.currentParseTree.advanceToNextNode();
             } else {
                 this.error = false;
                 System.out.println("Expected " + top + ", got " + next.toString());
@@ -114,22 +114,25 @@ public class Parser {
     }
 
     private void updateParseTree(Rule rule) {
+        ParseTree currentParent = this.parents.pop();
+        ArrayList<ParseTree> childrenTrees = new ArrayList<>();
+
         if(rule.rhs.length == 0) {
-            // so ε is non-terminal at the end
-            // -> add it to the parse tree and update the currentParseTree
-
+            // case of a rule producing ε
             Symbol epsilon = new Symbol(null, Symbol.UNDEFINED_POSITION, Symbol.UNDEFINED_POSITION, GrammarManager.epsilon);
-            this.currentParseTree.addChild(epsilon);
-
-            this.currentParseTree = this.currentParseTree.advanceToNextNode();
+            currentParent.addChild(epsilon);
         } else {
             // multiple rhs symbols, push them as the child of the current parent, and update the current parent;
             for(int i = 0; i < rule.rhs.length; i++) {
-                Symbol rhsSymbol = new Symbol(null, Symbol.UNDEFINED_POSITION, Symbol.UNDEFINED_POSITION, rule.rhs[i]);
-                this.currentParseTree.addChild(rhsSymbol);
+                LexicalUnit unit = Symbol.getLexicalUnit(rule.rhs[i]);
+                Symbol symbol = new Symbol(unit, Symbol.UNDEFINED_POSITION, Symbol.UNDEFINED_POSITION, rule.rhs[i]);
+                ParseTree childParseTree = currentParent.addChild(symbol);
+                childrenTrees.add(childParseTree);
             }
 
-            this.currentParseTree = this.currentParseTree.getChildren().get(0);
+            for(int i = childrenTrees.size() - 1; i >= 0; i--) {
+                this.parents.push(childrenTrees.get(i));
+            }
         }
     }
 }
