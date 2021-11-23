@@ -66,7 +66,7 @@ public class Parser {
 
                 ParseTree currentParent = parents.pop();
                 if(next.isTerminal()) {
-                    currentParent.getLabel().setValue(next.getValue());
+                    currentParent.updateLabelValue(next.getValue());
                 }
             } else {
                 this.error = false;
