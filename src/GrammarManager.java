@@ -197,18 +197,23 @@ public class GrammarManager {
             for (Rule rule : this.rules) {
                 Set<String> ruleFollow = this.follow.get(rule.lhs);
                 for (int i = rule.rhs.length - 1; i >= 0; i--) {
-                    if (this.nonTerminals.contains(rule.rhs[i])) {
+                    String rhsSymbol = rule.rhs[i];
+                    if (isNonTerminal(rhsSymbol)) {
                         for (String terminal : ruleFollow) {
-                            if (!this.follow.get(rule.rhs[i]).contains(terminal)) {
-                                this.follow.get(rule.rhs[i]).add(terminal);
+                            if (!this.follow.get(rhsSymbol).contains(terminal)) {
+                                this.follow.get(rhsSymbol).add(terminal);
                                 changed = true;
                             }
                         }
                     }
-                    if (this.nullables.contains(rule.rhs[i])) {
-                        ruleFollow = union(ruleFollow, this.first.get(rule.rhs[i]));
+                    if (isNullable(rhsSymbol)) {
+                        // update the follow set to also includes the first oh this nullable non-terminal
+                        // (only non-terminal can be nullable)
+                        ruleFollow = union(ruleFollow, this.first.get(rhsSymbol));
                     } else {
-                        ruleFollow = this.first.get(rule.rhs[i]);
+                        // rhs is a symbol
+                        // -> set the follow set as the first of this symbol (the symbol itself)
+                        ruleFollow = this.first.get(rhsSymbol);
                     }
                 }
             }
@@ -229,9 +234,9 @@ public class GrammarManager {
         for (Rule rule : this.rules) {
             for (String a : getFirstOfRhs(rule)) {
                 this.transitions.get(rule.lhs).get(a).add(rule);
-                
+
                 if(this.transitions.get(rule.lhs).get(a).size() > 1) {
-                    System.out.println("Ambigous Grammar: more than one transition from " + rule.lhs + " to " + a);
+                    System.out.println("Ambiguous Grammar: more than one transition from " + rule.lhs + " to " + a);
                     System.exit(1);
                 }
             }

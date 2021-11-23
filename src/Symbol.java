@@ -144,7 +144,7 @@ public class Symbol {
         str.append(this.lexicalUnitToTerminal.get(this.type));
 
         if(this.type == LexicalUnit.VARNAME || this.type == LexicalUnit.NUMBER) {
-            str.append(" - ");
+            str.append(": ");
             str.append(this.value.toString());
         }
         return str.toString();
