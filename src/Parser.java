@@ -12,12 +12,14 @@ public class Parser {
 
     private ParseTree rootParseTree;
     private ParseTree currentParseTree;
+    private String parseTreeOutputFile;
 
     private final ArrayList<String> appliedRules = new ArrayList<>();
 
-    public Parser(GrammarManager grammar, ScannerManager scanner) {
+    public Parser(GrammarManager grammar, ScannerManager scanner, String parseTreeOutputFile) {
         this.scanner = scanner;
         this.grammar = grammar;
+        this.parseTreeOutputFile = parseTreeOutputFile;
 
         initializeParserState();
     }
@@ -47,10 +49,10 @@ public class Parser {
     }
 
     public void parse() {
-        String next = getToken().toString();
+        Symbol next = getToken();
         String top = this.stack.pop();
 
-        if (top.equals("$") && next.equals("$")) {
+        if (top.equals("$") && next.toString().equals("$")) {
             onParsingSuccess();
             return;
         }
@@ -58,19 +60,22 @@ public class Parser {
         this.advanceInput = false;
         if (grammar.isTerminal(top)) {
             // If top of the stack matches next input character, consume the input
-            if (next.equals(top)) {
+            if (next.toString().equals(top)) {
                 this.advanceInput = true;
 
                 // updated the current tree, we have to update the current parent!!
+                if(next.getActualValue() != null) {
+                    this.currentParseTree.addChild(new ParseTree(next, this.currentParseTree));
+                }
                 this.currentParseTree = this.currentParseTree.advanceToNextNode();
             } else {
                 this.error = false;
-                System.out.println("Expected " + top + ", got " + next);
+                System.out.println("Expected " + top + ", got " + next.toString());
                 return;
             }
-        } else if (grammar.getTransitions().get(top).containsKey(next)) {
+        } else if (grammar.getTransitions().get(top).containsKey(next.toString())) {
             // try to find a valid transition first to include the next input value
-            if (grammar.getTransitions().get(top).get(next).size() == 0) {
+            if (grammar.getTransitions().get(top).get(next.toString()).size() == 0) {
                 //no transitions were found
                 error = true;
                 String expected = String.join(", ", this.grammar.getFirst().get(top).stream().toArray(String[]::new));
@@ -79,8 +84,7 @@ public class Parser {
             }
 
             // should only have one possible rule/production, since LL(1) is not ambiguous
-            Rule rule = grammar.getTransitions().get(top).get(next).get(0);
-
+            Rule rule = grammar.getTransitions().get(top).get(next.toString()).get(0);
             appliedRules.add(rule.ruleNumber);
 
             // expand the rule (push the right side of the rule onto the stack)
@@ -88,9 +92,7 @@ public class Parser {
                 this.stack.push(rule.rhs[i]);
             }
 
-            // update the current tree:
             updateParseTree(rule);
-
         } else {
             error = true;
             System.out.println("failure");
@@ -105,8 +107,10 @@ public class Parser {
     private void onParsingSuccess() {
         System.out.println("\nParsing complete! The following rules were applied:\n");
         System.out.println(String.join(" ", appliedRules)+ "\n");
-        System.out.print("\n\n");
-        System.out.println(this.rootParseTree.toLaTeX());
+
+        if(parseTreeOutputFile != null) {
+            IO.writeIntoFile(parseTreeOutputFile, this.rootParseTree.toLaTeX());
+        }
     }
 
     private void updateParseTree(Rule rule) {

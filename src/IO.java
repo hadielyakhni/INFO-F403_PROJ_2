@@ -1,4 +1,6 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,6 +15,14 @@ public class IO {
             e.printStackTrace();
         }
         return new String(encoded, Charset.defaultCharset());
+    }
+
+    public static void writeIntoFile(String fileName, String content){
+        try (PrintWriter out = new PrintWriter(fileName)) {
+            out.println(content);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }

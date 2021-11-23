@@ -20,3 +20,7 @@ javadoc:
 
 main:
 	cd src; javac Main.java; java Main ../test/euclid.co; cd ..;
+
+
+main_tex:
+	cd src; javac Main.java; java Main -wt ../tree.tex ../test/simple.co; cd ..;

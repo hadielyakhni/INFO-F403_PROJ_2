@@ -81,6 +81,14 @@ public class Symbol {
         }
     }
 
+    public String getActualValue() {
+        if(this.type == LexicalUnit.VARNAME || this.type == LexicalUnit.NUMBER) {
+            return this.value.toString();
+        }
+
+        return null;
+    }
+
     public String toTexString() {
         return this.value.toString();
     }
