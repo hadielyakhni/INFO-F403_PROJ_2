@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 
 public class ParseTree {
-    private Symbol label; // The label of the root of the tree
+    private final Symbol label; // The label of the root of the tree
     private final List<ParseTree> children; // Its children, which are trees themselves
 
     public ParseTree addChild(Symbol symbol) {
@@ -38,9 +38,7 @@ public class ParseTree {
      */
     public String toLaTexTree() {
         StringBuilder treeTeX = new StringBuilder();
-        treeTeX.append("[");
-        treeTeX.append("{" + label.toTexString() + "}");
-        treeTeX.append(" ");
+        treeTeX.append("[{").append(label.toTexString()).append("} ");
 
         for (ParseTree child : children) {
             treeTeX.append(child.toLaTexTree());

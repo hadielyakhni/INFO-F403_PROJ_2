@@ -1,17 +1,22 @@
 import java.util.*;
 
+/**
+ * This class is responsible for computing a given grammar tables, specifically,
+ * the parsing table (action table), by computing the sets of first and follow.
+ *
+ * Also provide some helper methods that are used by the parser instance.
+ */
 public class GrammarManager {
 
     public static String leftRightSeparator = "->";
+    public static String rulesSeparator = "\n";
     public static String rhsSeparator = " ";
-
     public static String epsilon = "ε";
 
     private final String grammar;
 
     private final Set<String> nonTerminals = new HashSet<>();
     private final Set<String> terminals = new HashSet<>();
-
     private final ArrayList<Rule> rules = new ArrayList<>();     // <- epsilon(s) filtered from rhs
     private final Set<String> nullables = new HashSet<>();
 
@@ -32,6 +37,10 @@ public class GrammarManager {
         computeTransitions();
     }
 
+    /**
+     * Returns the first Production left-hand side (it must be a non-terminal).
+     * The Parser stack will be initialized with this non-terminal.
+     */
     public String getGrammarTop() {
         return this.rules.get(0).lhs;
     }
@@ -44,8 +53,11 @@ public class GrammarManager {
         return this.transitions;
     }
 
+    /**
+     * Find non-terminal symbols from the grammar rules
+     */
     private void initializeNonTerminals() {
-        String[] lines = this.grammar.split("\n");
+        String[] lines = this.grammar.split(rulesSeparator);
 
         for (String line : lines) {
             String lhs = line.split(leftRightSeparator)[0].trim();
@@ -53,8 +65,12 @@ public class GrammarManager {
         }
     }
 
+    /**
+     * Find the terminals of a grammar by searching for symbols that are not non-terminals.
+     * "ε" symbol is not counted though.
+     */
     private void initializeTerminals() {
-        String[] lines = this.grammar.split("\n");
+        String[] lines = this.grammar.split(rulesSeparator);
         for (String line : lines) {
             String[] rhs = line.split(leftRightSeparator)[1].trim().split(rhsSeparator);
             for (String s : rhs) {
@@ -65,8 +81,11 @@ public class GrammarManager {
         }
     }
 
+    /**
+     * Save the grammar rules as an array of Rule
+     */
     private void initializeRules() {
-        String[] lines = this.grammar.split("\n");
+        String[] lines = this.grammar.split(rulesSeparator);
         int lineNumber = 0;
         for (String line : lines) {
             lineNumber++;
@@ -79,6 +98,10 @@ public class GrammarManager {
         }
     }
 
+    /**
+     * Find the nullable productions. These are the productions that produce only "ε",
+     * or the production that all their rhs rules only produce "ε".
+     */
     private void computeNullable() {
         boolean changed = true;
         while (changed) {
@@ -97,6 +120,12 @@ public class GrammarManager {
         }
     }
 
+    /**
+     * Given a rule of the form lhs -> rhs, where rhs is a string array of terminals and non-terminals,
+     * find the first of the rhs array.
+     * @param rule
+     * @return
+     */
     private Set<String> getFirstOfRhs(Rule rule) {
         String[] rhs = rule.rhs;
         int end = -1;
@@ -123,9 +152,11 @@ public class GrammarManager {
                     result.addAll(set2);
                     return result;
                 });
-
     }
 
+    /**
+     * Compute first set
+     */
     private void computeFirst() {
         for (String terminal : this.terminals) {
             Set<String> terminalFirst = new HashSet<>();
@@ -152,6 +183,9 @@ public class GrammarManager {
         }
     }
 
+    /**
+     * Compute follow set
+     */
     private void computeFollow() {
         for (String nonTerminal : this.nonTerminals) {
             this.follow.put(nonTerminal, new HashSet<>());
@@ -181,6 +215,9 @@ public class GrammarManager {
         }
     }
 
+    /**
+     * Compute transition set, a.k.a. the action table
+     */
     private void computeTransitions() {
         for (String nonTerminal : this.nonTerminals) {
             this.transitions.put(nonTerminal, new HashMap<>());
@@ -192,6 +229,11 @@ public class GrammarManager {
         for (Rule rule : this.rules) {
             for (String a : getFirstOfRhs(rule)) {
                 this.transitions.get(rule.lhs).get(a).add(rule);
+                
+                if(this.transitions.get(rule.lhs).get(a).size() > 1) {
+                    System.out.println("Ambigous Grammar: more than one transition from " + rule.lhs + " to " + a);
+                    System.exit(1);
+                }
             }
 
             if (Arrays.stream(rule.rhs).allMatch(this::isNullable)) {

@@ -36,3 +36,7 @@ While               -> while Cond do Code endwhile
 For                 -> for [VarName] from ExprArith by ExprArith to ExprArith do Code endfor
 Print               -> print ( [VarName] )
 Read                -> read ( [VarName] )
+
+
+
+
