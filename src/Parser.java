@@ -65,7 +65,7 @@ public class Parser {
 
                 // updated the current tree, we have to update the current parent!!
                 if(next.getActualValue() != null) {
-                    this.currentParseTree.addChild(new ParseTree(next, this.currentParseTree));
+                    this.currentParseTree.addChild(next);
                 }
                 this.currentParseTree = this.currentParseTree.advanceToNextNode();
             } else {
@@ -119,16 +119,14 @@ public class Parser {
             // -> add it to the parse tree and update the currentParseTree
 
             Symbol epsilon = new Symbol(null, Symbol.UNDEFINED_POSITION, Symbol.UNDEFINED_POSITION, GrammarManager.epsilon);
-            ParseTree epsilonNode = new ParseTree(epsilon, this.currentParseTree);
-            this.currentParseTree.addChild(epsilonNode);
+            this.currentParseTree.addChild(epsilon);
 
             this.currentParseTree = this.currentParseTree.advanceToNextNode();
         } else {
             // multiple rhs symbols, push them as the child of the current parent, and update the current parent;
             for(int i = 0; i < rule.rhs.length; i++) {
                 Symbol rhsSymbol = new Symbol(null, Symbol.UNDEFINED_POSITION, Symbol.UNDEFINED_POSITION, rule.rhs[i]);
-                ParseTree node = new ParseTree(rhsSymbol, this.currentParseTree);
-                this.currentParseTree.addChild(node);
+                this.currentParseTree.addChild(rhsSymbol);
             }
 
             this.currentParseTree = this.currentParseTree.getChildren().get(0);

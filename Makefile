@@ -23,4 +23,4 @@ main:
 
 
 main_tex:
-	cd src; javac Main.java; java Main -wt ../tree.tex ../test/simple.co; cd ..;
+	cd src; javac Main.java; java Main -wt ../tree.tex ../test/euclid.co; cd ..;

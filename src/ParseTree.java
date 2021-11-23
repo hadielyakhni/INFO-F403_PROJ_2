@@ -23,8 +23,8 @@ public class ParseTree {
         return children;
     }
 
-    public void addChild(ParseTree child) {
-        children.add(child);
+    public void addChild(Symbol symbol) {
+        children.add(new ParseTree(symbol, this));
     }
 
     public ParseTree advanceToNextNode() {
